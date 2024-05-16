@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 def get_columns(type="regression"):
   columns = {
-    "numerical": {
+    "regression": {
       "numerical": [
         'crim', # numerical
         'zn', # numerical
