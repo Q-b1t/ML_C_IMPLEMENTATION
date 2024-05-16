@@ -3,11 +3,12 @@ from sklearn.tree import DecisionTreeClassifier,DecisionTreeRegressor
 
 
 class BaggedTreeRegressor:
-  def __init__(self,B):
+  def __init__(self,n_estimators,max_depth = None):
     """
     B: Number of bagging rounds
     """
-    self.B = B
+    self.B = n_estimators
+    self.max_depth = max_depth
 
   def fit(self,X,Y):
     """
@@ -23,7 +24,7 @@ class BaggedTreeRegressor:
       Xb, Yb = X[idx],Y[idx]
 
       # train the model
-      model =   DecisionTreeRegressor()
+      model =   DecisionTreeRegressor(max_depth=self.max_depth)
       model.fit(Xb, Yb)
       self.models.append(model)
 
@@ -41,8 +42,9 @@ class BaggedTreeRegressor:
 
 
 class BaggedTreeClassifier:
-  def __init__(self,B):
-    self.B = B
+  def __init__(self,n_estimators,max_depth = None):
+    self.B = n_estimators
+    self.max_depth = max_depth
 
   def fit(self,X,Y):
     # get the dataset size
@@ -55,7 +57,7 @@ class BaggedTreeClassifier:
       Xb,Yb = X[idx],Y[idx]
 
       # train a model
-      model = DecisionTreeClassifier(max_depth = 2) # to have a smother decision boundary
+      model = DecisionTreeClassifier(max_depth = self.max_depth) # to have a smother decision boundary
       model.fit(Xb,Yb)
       self.models.append(model)
 
