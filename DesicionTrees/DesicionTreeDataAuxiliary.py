@@ -58,9 +58,9 @@ class DataTransformerRegressor:
       i += 1
     return X
 
-  def fit_transform(self, df):
-    self.fit(df)
-    return self.transform(df)
+  def fit_transform(self, df,cols):
+    self.fit(df,cols)
+    return self.transform(df,cols)
 
 
 
@@ -94,7 +94,6 @@ class DataTransformerClassifier:
     print("dimensionality:", self.D)
 
 
-
   def transform(self, df):
     N, _ = df.shape
     X = np.zeros((N, self.D))
@@ -103,6 +102,16 @@ class DataTransformerClassifier:
       X[:,i] = scaler.transform(df[col].values.reshape(-1, 1)).flatten()
       i += 1
 
+    for col, encoder in iteritems(self.labelEncoders):
+      # print "transforming col:", col
+      K = len(encoder.classes_)
+      X[np.arange(N), encoder.transform(df[col]) + i] = 1
+      i += K
+    return X
+
+  def fit_transform(self, df,cols):
+    self.fit(df,cols=cols)
+    return self.transform(df)
 
 
 
@@ -111,9 +120,7 @@ class DataTransformerClassifier:
 
 
 
-
-
-def preprocess_housing_data(data_path="housing.data"):
+def preprocess_housing_data(cols,data_path="housing.data"):
   df = pd.read_csv('housing.data', header=None, delim_whitespace=True)
   df.columns = [
     'crim', # numerical
@@ -141,9 +148,9 @@ def preprocess_housing_data(data_path="housing.data"):
   df_train = df.loc[train_idx]
   df_test = df.loc[test_idx]
   # preprocess the data using the custom transformer
-  X_train = transformer.fit_transform(df_train)
+  X_train = transformer.fit_transform(df_train,cols=cols)
   y_train = np.log(df_train['medv'].values)
-  X_test = transformer.transform(df_test)
+  X_test = transformer.transform(df_test,cols=cols)
   y_test = np.log(df_test['medv'].values)
   return X_train, y_train, X_test, y_test
 
@@ -163,7 +170,7 @@ def replace_missing(df,cols):
       df.loc[ df[col].isnull(), col ] = 'missing'
 
 
-def preprocess_mushrom_data(data_path = "agaricus-lepiota.data"):
+def preprocess_mushrom_data(cols,data_path = "agaricus-lepiota.data"):
   df = pd.read_csv(data_path, header=None)
 
   # replace label column: e/p --> 0/1
@@ -171,11 +178,11 @@ def preprocess_mushrom_data(data_path = "agaricus-lepiota.data"):
   df[0] = df.apply(lambda row: 0 if row[0] == 'e' else 1, axis=1)
 
   # check if there is missing data
-  replace_missing(df)
+  replace_missing(df,cols=cols)
 
   # transform the data
   transformer = DataTransformerClassifier()
 
-  X = transformer.fit_transform(df)
+  X = transformer.fit_transform(df,cols=cols)
   Y = df[0].values
   return X, Y
