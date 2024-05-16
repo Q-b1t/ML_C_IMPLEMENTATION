@@ -121,7 +121,7 @@ class DataTransformerClassifier:
 
 
 def preprocess_housing_data(cols,data_path="housing.data"):
-  df = pd.read_csv('housing.data', header=None, delim_whitespace=True)
+  df = pd.read_csv(data_path, header=None, delim_whitespace=True)
   df.columns = [
     'crim', # numerical
     'zn', # numerical
