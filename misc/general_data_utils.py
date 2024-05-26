@@ -3,6 +3,7 @@ A collection of functions for creating/parsing/preprocessing data that may be
 shared across multiple algorithms for experimentation purposes.
 """
 import numpy as np
+import pandas as pd
 
 
 def get_xor():
@@ -33,4 +34,16 @@ def get_donut():
 
   X = np.concatenate([ X_inner, X_outer ])
   Y = np.array([0]*(N//2) + [1]*(N//2))
+  return X, Y
+
+
+# get the data (mnist)
+def get_data(path = "train.csv",limit = None):
+  df = pd.read_csv(path)
+  data = df.values
+  np.random.shuffle(data)
+  X = data[:, 1:] / 255.0 # data is from 0..255
+  Y = data[:, 0]
+  if limit is not None:
+      X, Y = X[:limit], Y[:limit]
   return X, Y
