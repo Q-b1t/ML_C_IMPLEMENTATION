@@ -14,6 +14,20 @@ def get_xor():
   X[150:] = np.random.random((50,2)) / 2 + np.array([[0.5,0]])
   Y = np.array([0]*100 + [1]*100)
   return X,Y
+ 
+ # literally, a simplied xor
+def get_simple_xor():
+  X = np.array(
+    [
+        [0,0],
+        [0,1],
+        [1,0],
+        [1,1]
+    ]
+  )
+  Y = np.array([0,1,1,0])
+  return X,Y
+
 
 def get_donut():
   """
@@ -47,3 +61,12 @@ def get_data(path = "train.csv",limit = None):
   if limit is not None:
       X, Y = X[:limit], Y[:limit]
   return X, Y
+
+
+# create a dataset of randomly distributed linearly separable data
+def get_linearly_separable_data():
+   w = np.array([-0.5,0.5]) # initialize the weights
+   b = 0.1 # initialize the bias
+   x = np.random.random((300,2)) * 2 -1 # initialize x from a gaussian distribution (I think)
+   y = np.sign(x.dot(w)+b)
+   return y
