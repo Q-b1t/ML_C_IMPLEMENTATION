@@ -69,4 +69,4 @@ def get_linearly_separable_data():
    b = 0.1 # initialize the bias
    x = np.random.random((300,2)) * 2 -1 # initialize x from a gaussian distribution (I think)
    y = np.sign(x.dot(w)+b)
-   return y
+   return x,y
